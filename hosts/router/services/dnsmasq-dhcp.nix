@@ -19,17 +19,19 @@
       mac = null; # Router doesn't need MAC
       aliases = ["router" "router.lan"];
     };
-    storage = {
-      ip = "${netConfig.prefix}.5";
-      mac = "00:e0:4c:bb:00:e3";
-      aliases = ["storage" "storage.lan"];
+    # Server - encephalon
+    encephalon = {
+      ip = "${netConfig.prefix}.10";
+      mac = "e6:8d:cf:3b:8d:fa";
+      aliases = ["encephalon" "encephalon.lan"];
     };
-    # Add more static hosts here as needed
-    # laptop = {
-    #   ip = "${netConfig.prefix}.10";
-    #   mac = "aa:bb:cc:dd:ee:ff";
-    #   aliases = ["laptop" "laptop.lan"];
-    # };
+
+    # Karens work laptop
+    laptop = {
+      ip = "${netConfig.prefix}.15";
+      mac = "aa:bb:cc:dd:ee:ff";
+      aliases = ["kml-laptop" "kml-laptop.lan"];
+    };
   };
 in {
   # Disable systemd-networkd DHCP server
@@ -47,7 +49,7 @@ in {
       bind-interfaces = true;
 
       # DHCP range
-      dhcp-range = "${netConfig.prefix}.100,${netConfig.prefix}.149,12h";
+      dhcp-range = "${netConfig.prefix}.100,${netConfig.prefix}.249,12h";
 
       # DHCP options
       dhcp-option = [

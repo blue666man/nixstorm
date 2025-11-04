@@ -12,7 +12,7 @@
     ./traffic-shaping.nix
     ./alerting.nix
     ./ntfy-webhook.nix
-    # ./performance-tuning.nix # BBR v3 and TCP optimizations (disabled - may cause issues)
+    ./performance-tuning.nix # BBR v3 and TCP optimizations (enabled - may cause issues)
     # ./hardware-offload.nix # TSO/GSO/GRO offloading (disabled - may cause issues)
     # ./loop-protection.nix # Network loop detection and prevention
     # ./xdp-firewall.nix       # XDP DDoS protection (disabled - overkill for home use)
@@ -22,7 +22,7 @@
   # Boot configuration
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.configurationLimit = 2; # Keep only 2 generations
+  boot.loader.systemd-boot.configurationLimit = 8; # Keep only 8 generations
 
   # Enable IP forwarding and connection tracking
   boot.kernel.sysctl = {
@@ -44,13 +44,16 @@
 
   # System packages - minimal set for router functionality
   environment.systemPackages = with pkgs; [
-    vim # Keep for editing
-    conntrack-tools # Required for client tracking
-    jq # Required for parsing nftables output
-    speedtest-cli # Required for speed testing
+    alejandra # *.nix file automatic formatting
     bc # Required for speed test calculations
-    gawk # Required for speed test parsing
+    conntrack-tools # Required for client tracking
     curl # Required for WAN IP detection fallback
+    ethtool # Ethernet tool for setting MTUs and various other layer 2 settings
+    gawk # Required for speed test parsing
+    jq # Required for parsing nftables output
+    neovim # Better editor
+    speedtest-cli # Required for speed testing
+    vim # Keep for editing
   ];
 
   # Enable SSH
@@ -69,14 +72,14 @@
   # Additional Nix settings to minimize disk usage
   nix.settings = {
     auto-optimise-store = true;
-    min-free = 100 * 1024 * 1024; # 100MB minimum free space
-    max-free = 500 * 1024 * 1024; # 500MB maximum free space
+    min-free = 1024 * 1024 * 1024; # 1 GB minimum free space
+    max-free = 5 * 1024 * 1024 * 1024; # 5 GB maximum free space
   };
 
   # Limit journal size
   services.journald.extraConfig = ''
-    SystemMaxUse=100M
-    SystemKeepFree=50M
+    SystemMaxUse=300M
+    SystemKeepFree=500M
     MaxRetentionSec=7day
   '';
 
@@ -95,13 +98,13 @@
   constellation.podman.enable = true;
 
   # System state version
-  system.stateVersion = "24.05";
+  system.stateVersion = "25.05";
 
   # Email configuration using constellation module
   constellation.email = {
     enable = true;
-    fromEmail = "router-alerts@rosenfeld.one";
-    toEmail = "alex@rosenfeld.one"; # Change to your email
+    fromEmail = "router-alerts@westtownians.net";
+    toEmail = "john.j.muller@proton.me"; # Change to your email
   };
 
   # Enable LLM-powered crash log analysis
@@ -113,8 +116,8 @@
 
     # WAN shaping - set to 90% of 2.5G symmetric fiber
     wanShaping = {
-      bandwidth = 2250; # Upload bandwidth in Mbit/s (90% of 2500)
-      ingressBandwidth = 2250; # Download bandwidth in Mbit/s (90% of 2500)
+      bandwidth = 900; # Upload bandwidth in Mbit/s (90% of 1000)
+      ingressBandwidth = 900; # Download bandwidth in Mbit/s (90% of 1000)
       overhead = "ethernet"; # Fiber uses ethernet framing
       nat = true;
       wash = false; # No need to wash DSCP on fiber
@@ -125,8 +128,8 @@
 
     # LAN shaping (optional - usually not needed)
     lanShaping = {
-      enable = false;
-      bandwidth = 1000;
+      enable = true;
+      bandwidth = 10000;
       flowMode = "flows";
       rttMode = "lan";
     };
@@ -158,13 +161,13 @@
     # webhookUrl = "https://discord.com/api/webhooks/YOUR_WEBHOOK_URL";
 
     # ntfy.sh push notifications (mobile app)
-    ntfyUrl = "https://ntfy.sh/arsfeld-router";
+    # ntfyUrl = "https://ntfy.sh/arsfeld-router";
 
     # Alert thresholds
     thresholds = {
       diskUsagePercent = 80; # Alert when disk usage exceeds 80%
       temperatureCelsius = 70; # Alert when temperature exceeds 70°C
-      bandwidthMbps = 2000; # Alert when client uses >2Gbps
+      bandwidthMbps = 1000; # Alert when client uses > 1Gbps
       cpuUsagePercent = 90; # Alert when CPU usage exceeds 90%
       memoryUsagePercent = 85; # Alert when memory usage exceeds 85%
     };

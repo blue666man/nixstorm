@@ -9,15 +9,24 @@
     #!${pkgs.bash}/bin/bash
 
     # Monitor kernel messages for loop detection
+    PATTERN="^received packet on ([[:alnum:]]+) with own address as source$"
+    INTERFACE_NAME=""
     ${pkgs.systemd}/bin/journalctl -f -n0 -k | while read line; do
-      if echo "$line" | grep -q "received packet on enp4s0 with own address as source"; then
-        echo "Loop detected on enp4s0, disabling port temporarily"
-        ${pkgs.iproute2}/bin/ip link set enp4s0 down
+      # The [[ ... =~ $PATTERN ]] structure attempts the match.
+      # If successful (exit status 0), the captured text is stored in the global BASH_REMATCH array.
+      if [[ "$line" =~ $PATTERN ]]; then
+        # BASH_REMATCH[0] is the whole matched string.
+        # BASH_REMATCH[1] is the content of the first capturing group (the interface name).
+        INTERFACE_NAME="${BASH_REMATCH [1]}"
+        # Don't bother checking
+        echo "Loop detected on LAN interface: ${INTERFACE_NAME} , disabling port temporarily"
+        ${pkgs.iproute2}/bin/ip link set ${INTERFACE_NAME} down
         sleep 60
-        echo "Re-enabling enp4s0"
-        ${pkgs.iproute2}/bin/ip link set enp4s0 up
-        ${pkgs.iproute2}/bin/ip link set enp4s0 master br-lan
+        echo "Re-enabling ${INTERFACE_NAME}"
+        ${pkgs.iproute2}/bin/ip link set ${INTERFACE_NAME} up
+        ${pkgs.iproute2}/bin/ip link set ${INTERFACE_NAME} master br-lan
       fi
+      INTERFACE_NAME=""
     done
   '';
 in {
@@ -45,12 +54,12 @@ in {
   };
 
   # More strict configuration for lan2 port
-  systemd.network.networks."30-lan2".bridgeConfig = lib.mkForce {
-    HairPin = false;
-    FastLeave = true;
-    Cost = 100; # Higher cost makes this port less preferred
-    Priority = 32; # Valid range is 0-63
-  };
+  #systemd.network.networks."30-lan2".bridgeConfig = lib.mkForce {
+  #  HairPin = false;
+  #  FastLeave = true;
+  #  Cost = 100; # Higher cost makes this port less preferred
+  #  Priority = 32; # Valid range is 0-63
+  #};
 
   # Add iptables rules to detect and log MAC spoofing
   networking.nftables.ruleset = lib.mkAfter ''

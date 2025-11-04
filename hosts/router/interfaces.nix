@@ -10,9 +10,11 @@
   # Define interface names for production router
   # Adjust these based on your actual hardware
   router.interfaces = {
-    wan = "enp2s0"; # WAN interface (MAC: 60:be:b4:0d:63:30, Link: UP)
-    lan1 = "enp3s0"; # First LAN port (MAC: 60:be:b4:0d:63:31, Link: DOWN)
-    lan2 = "enp4s0"; # Second LAN port (MAC: 60:be:b4:0d:63:32, Link: DOWN)
-    lan3 = "enp5s0"; # Third LAN port (MAC: 60:be:b4:0d:63:33, Link: DOWN)
+    wan = "enp1s0"; # WAN interface (MAC: 20:7c:14:f8:34:a6)
+    lan10g = "enp2s0"; # Primary LAN goes to big switch (MAC: 20:7c:14:f8:34:a7)
+    lan2_5g-1 = "enp4s0"; # 2.5G LAN port 1 (MAC: 20:7c:14:f8:31:a8)
+    lan2_5g-2 = "enp5s0"; # 2.5G LAN port 2 (MAC: 20:7c:14:f8:31:a9)
+    lan2_5g-3 = "enp6s0"; # 2.5G LAN port 3 (MAC: 20:7c:14:f8:31:aa)
+    lan2_5g-4 = "enp7s0"; # 2.5G LAN port 4 (MAC: 20:7c:14:f8:31:ab)
   };
 }

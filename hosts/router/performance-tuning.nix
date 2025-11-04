@@ -145,13 +145,13 @@
 
   # Kernel parameters for performance
   boot.kernelParams = [
-    "mitigations=off" # Disable CPU vulnerability mitigations for performance (evaluate security risk!)
+    #    "mitigations=off" # Disable CPU vulnerability mitigations for performance (evaluate security risk!)
     "processor.max_cstate=1" # Disable deep C-states for lower latency
     "intel_idle.max_cstate=1" # Intel specific C-state control
     "skew_tick=1" # Reduce timer ticks congestion
     "nohz_full=2-3" # Tickless on CPU cores 2-3 (adjust based on CPU count)
     "rcu_nocbs=2-3" # Move RCU callbacks to other cores
-    "net.ifnames=0" # Use traditional interface names (optional)
+    #    "net.ifnames=0" # Use traditional interface names (optional)
     "transparent_hugepage=always" # Transparent hugepages for better memory performance
   ];
 
@@ -159,7 +159,7 @@
   powerManagement.cpuFreqGovernor = "performance";
 
   # Disable CPU throttling
-  services.thermald.enable = false; # Only if cooling is adequate!
+  #  services.thermald.enable = false; # Only if cooling is adequate!
 
   # IRQ balancing for better interrupt distribution
   services.irqbalance = {

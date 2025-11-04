@@ -104,7 +104,7 @@
 
     # Set interface speed and duplex to maximum supported
     # This ensures we're not auto-negotiating to a lower speed
-    ${pkgs.ethtool}/bin/ethtool -s ${iface} speed 2500 duplex full autoneg on 2>/dev/null || true
+    # ${pkgs.ethtool}/bin/ethtool -s ${iface} speed 2500 duplex full autoneg on 2>/dev/null || true
 
     echo "  Hardware offload configuration complete for ${iface}"
   '';
@@ -129,9 +129,11 @@ in {
         ${offloadScript interfaces.wan}
 
         # Configure LAN interfaces
-        ${offloadScript interfaces.lan1}
-        ${offloadScript interfaces.lan2}
-        ${offloadScript interfaces.lan3}
+        ${offloadScript interfaces.lan10g}
+        ${offloadScript interfaces.lan2_5g-1}
+        ${offloadScript interfaces.lan2_5g-2}
+        ${offloadScript interfaces.lan2_5g-3}
+        ${offloadScript interfaces.lan2_5g-4}
 
         # Configure bridge interface (limited offloading)
         echo "Configuring bridge offloading..."
@@ -141,7 +143,7 @@ in {
         # Display final status
         echo ""
         echo "Hardware offload status:"
-        for iface in ${interfaces.wan} ${interfaces.lan1} ${interfaces.lan2} ${interfaces.lan3} br-lan; do
+        for iface in ${interfaces.wan} ${interfaces.lan10g} ${interfaces.lan2_5g-1} ${interfaces.lan2_5g-2} ${interfaces.lan2_5g-3} ${interfaces.lan2_5g-4} br-lan; do
           if [ -e "/sys/class/net/$iface" ]; then
             echo ""
             echo "Interface: $iface"
@@ -168,7 +170,7 @@ in {
         # Export metrics for Prometheus node exporter
         mkdir -p /var/lib/prometheus/node-exporter
 
-        for iface in ${interfaces.wan} ${interfaces.lan1} ${interfaces.lan2} ${interfaces.lan3}; do
+        for iface in ${interfaces.wan} ${interfaces.lan10g} ${interfaces.lan2_5g-1} ${interfaces.lan2_5g-2} ${interfaces.lan2_5g-3} ${interfaces.lan2_5g-4} ; do
           if [ -e "/sys/class/net/$iface" ]; then
             # Get offload status
             TSO=$(${pkgs.ethtool}/bin/ethtool -k $iface 2>/dev/null | grep "tcp-segmentation-offload:" | grep -c "on" || echo 0)
