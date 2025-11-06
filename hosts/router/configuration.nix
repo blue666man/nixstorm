@@ -26,8 +26,8 @@
 
   # Enable IP forwarding and connection tracking
   boot.kernel.sysctl = {
-    "net.ipv4.conf.all.forwarding" = true;
-    "net.ipv6.conf.all.forwarding" = false;
+    #"net.ipv4.conf.all.forwarding" = true;
+    #"net.ipv6.conf.all.forwarding" = false;
     "net.netfilter.nf_conntrack_acct" = true;
   };
 
@@ -96,6 +96,9 @@
 
   # Enable Podman for containerized services
   constellation.podman.enable = true;
+
+  # Enable SOPS secretes
+  constellation.sops.enable = true;
 
   # System state version
   system.stateVersion = "25.05";

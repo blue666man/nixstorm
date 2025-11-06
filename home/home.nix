@@ -32,12 +32,12 @@ in {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home = {
-    username = "arosenfeld";
+    username = "xiphias";
     homeDirectory =
       if stdenv.isLinux
-      then "/home/arosenfeld"
-      else "/Users/arosenfeld";
-    stateVersion = "22.05";
+      then "/home/xiphias"
+      else "/Users/xiphias";
+    stateVersion = "25.05";
 
     # NPM configuration
     file.".npmrc".text = ''
@@ -45,11 +45,9 @@ in {
     '';
     packages = with pkgs;
       [
-        android-tools
         btop
         bottom
         cachix
-        czkawka
         deno
         devbox
         devenv
@@ -349,8 +347,8 @@ in {
   programs.git = {
     enable = true;
     #delta.enable = true;
-    userEmail = "arsfeld@gmail.com";
-    userName = "Alexandre Rosenfeld";
+    userEmail = "john.j.muller@proton.me";
+    userName = "John Muller";
     extraConfig = {
       credential = {
         helper = "store";

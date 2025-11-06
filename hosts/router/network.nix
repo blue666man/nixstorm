@@ -202,8 +202,23 @@ in {
         };
 
         # LAN interfaces connected to bridge
+        "30-lan10g" = {
+          matchConfig.Name = interfaces.lan10g;
+          networkConfig = {
+            Bridge = "br-lan";
+          };
+          linkConfig.RequiredForOnline = "enslaved";
+          bridgeConfig = {
+            # Enable BPDU guard to disable port if it receives BPDUs (loop detection)
+            HairPin = false;
+            FastLeave = true;
+            # Cost for STP path selection (lower = preferred)
+            Cost = 3;
+          };
+        };
+
         "30-lan1" = {
-          matchConfig.Name = interfaces.lan1;
+          matchConfig.Name = interfaces.lan2_5g-1;
           networkConfig = {
             Bridge = "br-lan";
           };
@@ -218,7 +233,7 @@ in {
         };
 
         "30-lan2" = {
-          matchConfig.Name = interfaces.lan2;
+          matchConfig.Name = interfaces.lan2_5g-2;
           networkConfig = {
             Bridge = "br-lan";
           };
@@ -233,7 +248,22 @@ in {
         };
 
         "30-lan3" = {
-          matchConfig.Name = interfaces.lan3;
+          matchConfig.Name = interfaces.lan2_5g-3;
+          networkConfig = {
+            Bridge = "br-lan";
+          };
+          linkConfig.RequiredForOnline = "enslaved";
+          bridgeConfig = {
+            # Enable BPDU guard to disable port if it receives BPDUs (loop detection)
+            HairPin = false;
+            FastLeave = true;
+            # Cost for STP path selection (lower = preferred)
+            Cost = 4;
+          };
+        };
+
+        "30-lan4" = {
+          matchConfig.Name = interfaces.lan2_5g-4;
           networkConfig = {
             Bridge = "br-lan";
           };

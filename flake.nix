@@ -128,7 +128,7 @@
           transformer = inputs.haumea.lib.transformers.liftDefault;
         };
 
-        legacyPackages.homeConfigurations.arosenfeld = inputs.home-manager.lib.homeManagerConfiguration {
+        legacyPackages.homeConfigurations.xiphias = inputs.home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
             inputs.nix-index-database.homeModules.nix-index
